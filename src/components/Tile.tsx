@@ -2,6 +2,7 @@ import { IMineVisibilityState } from "../interfaces/IBoardState";
 import { styled } from "../interfaces/Styles";
 import { css } from "@emotion/css";
 import redFlag from "./red-flag.svg";
+import explosion from "./icons8-explosion-24.png";
 
 const styles = styled({
   root: {
@@ -46,12 +47,18 @@ const getColorForNearbyMines = (nearbyMines: number) => {
 };
 
 export interface ITileProps {
+  gameOver: boolean;
   isMine: boolean;
   visibility: IMineVisibilityState;
   nearbyMines: number;
 }
 
-export const Tile = ({ isMine, visibility, nearbyMines }: ITileProps) => {
+export const Tile = ({
+  isMine,
+  visibility,
+  nearbyMines,
+  gameOver,
+}: ITileProps) => {
   const isUnveiled = visibility === "unveiled";
   const isFlagged = visibility === "flagged";
 
@@ -65,6 +72,9 @@ export const Tile = ({ isMine, visibility, nearbyMines }: ITileProps) => {
     >
       {isFlagged && (
         <img src={redFlag} className={css(styles.flag)} alt="Flagged" />
+      )}
+      {gameOver && visibility !== "flagged" && isMine && (
+        <img src={explosion} alt="Mine exploded" />
       )}
       {nearbyMines !== 0 && (
         <span

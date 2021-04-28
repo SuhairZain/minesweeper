@@ -5,7 +5,7 @@ import { IBoardState, ITileState } from "./interfaces/IBoardState";
 const boardSize = 10;
 
 const tiles: ITileState[] = [];
-const boardState: IBoardState = { tiles, gameOver: false };
+const boardState: IBoardState = { tiles, gameOver: true };
 for (let i = 0; i < boardSize * boardSize; ++i) {
   tiles.push({
     visibility: i % 3 === 0 ? "unveiled" : "obscure",
@@ -13,11 +13,13 @@ for (let i = 0; i < boardSize * boardSize; ++i) {
   });
 }
 
+// tiles[3].visibility = "obscure";
 tiles[3].isMine = true;
 tiles[4].visibility = "flagged";
 
 // TODO: Add modal for attribution for the flag icon and the several other resources I'm going to need
 // <div>Icons made by <a href="https://www.flaticon.com/authors/alfredo-hernandez" title="Alfredo Hernandez">Alfredo Hernandez</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+// <a target="_blank" href="undefined/icons/set/explosion">Explosion icon</a> icon by <a target="_blank" href="">Icons8</a>
 function App() {
   return (
     <div className="App">

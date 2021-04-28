@@ -27,16 +27,20 @@ export const Board = ({ size, state }: IBoardProps) => {
 
       tiles.push(
         <Tile
+          key={j}
           isMine={isMine}
           visibility={visibility}
           nearbyMines={
-            visibility === "unveiled" ? 1 + Math.floor(Math.random() * 9) : 0
+            !isMine && visibility === "unveiled"
+              ? 1 + Math.floor(Math.random() * 9)
+              : 0
           }
+          gameOver={state.gameOver || true}
         />
       );
     }
 
-    rows.push(<div>{tiles}</div>);
+    rows.push(<div key={i}>{tiles}</div>);
   }
 
   return <div style={styles.root}>{rows}</div>;
