@@ -63,7 +63,9 @@ export const Tile = ({ isMine, visibility, nearbyMines }: ITileProps) => {
         isFlagged && styles.flagged,
       ])}
     >
-      {isFlagged && <img src={redFlag} className={css(styles.flag)} />}
+      {isFlagged && (
+        <img src={redFlag} className={css(styles.flag)} alt="Flagged" />
+      )}
       {nearbyMines !== 0 && (
         <span
           className={css([styles.nearbyMines], {
