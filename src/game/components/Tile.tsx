@@ -19,6 +19,9 @@ const styles = styled({
     flex: 1,
     alignSelf: "stretch",
   },
+  clickable: {
+    cursor: "pointer",
+  },
   unveiled: {
     backgroundColor: "#4b505b",
   },
@@ -57,6 +60,8 @@ export interface ITileProps {
   visibility: ITileVisibilityState;
   nearbyMines: number;
   style: CSSProperties;
+  onClick: () => void;
+  onRightClick: () => void;
 }
 
 export const Tile = ({
@@ -65,9 +70,14 @@ export const Tile = ({
   nearbyMines,
   gameOver,
   style,
+  onClick,
+  onRightClick,
 }: ITileProps) => {
   const isUnveiled = visibility === "unveiled";
   const isFlagged = visibility === "flagged";
+
+  const canClick = !gameOver && !isUnveiled && !isFlagged;
+  const clickHandler = canClick ? onClick : () => {};
 
   return (
     <div className={css(styles.root)} style={style}>
@@ -76,7 +86,9 @@ export const Tile = ({
           styles.content,
           isUnveiled && styles.unveiled,
           isFlagged && styles.flagged,
+          canClick && styles.clickable,
         ])}
+        onClick={clickHandler}
       >
         {isFlagged && (
           <img src={redFlag} className={css(styles.flag)} alt="Flagged" />
@@ -84,7 +96,7 @@ export const Tile = ({
         {gameOver && visibility !== "flagged" && isMine && (
           <img src={explosion} alt="Mine exploded" />
         )}
-        {nearbyMines !== 0 && (
+        {isUnveiled && !isMine && nearbyMines !== 0 && (
           <span
             className={css([styles.nearbyMines], {
               color: getColorForNearbyMines(nearbyMines),

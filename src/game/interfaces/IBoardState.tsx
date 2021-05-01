@@ -9,7 +9,6 @@ export interface IBoard {
 }
 
 export interface IBoardState {
-  board: IBoard;
   visibilityState: ITileVisibilityState[];
   gameOver: boolean;
 }

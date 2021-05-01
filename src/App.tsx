@@ -1,33 +1,28 @@
+import { useState } from "react";
 import "./App.css";
 import { Board } from "./game/components/Board";
-import {
-  IBoard,
-  IBoardState,
-  ITile,
-  ITileVisibilityState,
-} from "./game/interfaces/IBoardState";
-
-const boardSize = 10;
-
-const tiles: ITile[] = [];
-const board: IBoard = { tiles };
-const visibilityState: ITileVisibilityState[] = [];
-const boardState: IBoardState = { board, visibilityState, gameOver: true };
-for (let i = 0; i < boardSize * boardSize; ++i) {
-  tiles.push({
-    isMine: false,
-  });
-
-  visibilityState.push(i % 3 === 0 ? "unveiled" : "hidden");
-}
-
-tiles[3].isMine = true;
-visibilityState[4] = "flagged";
+import { createBoard } from "./game/createBoard";
+import { IBoard, IBoardState } from "./game/interfaces/IBoardState";
 
 // TODO: Add modal for attribution for the flag icon and the several other resources I'm going to need
 // <div>Icons made by <a href="https://www.flaticon.com/authors/alfredo-hernandez" title="Alfredo Hernandez">Alfredo Hernandez</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 // <a target="_blank" href="undefined/icons/set/explosion">Explosion icon</a> icon by <a target="_blank" href="">Icons8</a>
 function App() {
+  const [boardSize, setBoardSize] = useState(10);
+
+  const [board, setBoard] = useState<IBoard>({
+    tiles: new Array(boardSize * boardSize)
+      .fill(0)
+      .map(() => ({ isMine: false })),
+  });
+
+  const [boardState, setBoardState] = useState<IBoardState>({
+    gameOver: false,
+    visibilityState: board.tiles.map(() => "hidden"),
+  });
+
+  const gameStarted = boardState.visibilityState.some((v) => v !== "hidden");
+
   return (
     <div className="App">
       <div
@@ -37,7 +32,25 @@ function App() {
           flex: 1,
         }}
       >
-        <Board state={boardState} />
+        <Board
+          board={board}
+          state={boardState}
+          onClick={(index) => {
+            if (!gameStarted) {
+              setBoard(createBoard(boardSize, 10, index));
+            }
+
+            const gameOver = board.tiles[index].isMine;
+
+            setBoardState({
+              gameOver,
+              visibilityState: boardState.visibilityState.map((v, i) =>
+                i === index ? "unveiled" : v
+              ),
+            });
+          }}
+          onRightClick={() => {}}
+        />
       </div>
     </div>
   );
