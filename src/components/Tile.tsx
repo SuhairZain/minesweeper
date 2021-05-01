@@ -1,4 +1,4 @@
-import { IMineVisibilityState } from "../interfaces/IBoardState";
+import { ITileVisibilityState } from "../interfaces/IBoardState";
 import { styled } from "../interfaces/Styles";
 import { css } from "@emotion/css";
 import redFlag from "./red-flag.svg";
@@ -49,7 +49,7 @@ const getColorForNearbyMines = (nearbyMines: number) => {
 export interface ITileProps {
   gameOver: boolean;
   isMine: boolean;
-  visibility: IMineVisibilityState;
+  visibility: ITileVisibilityState;
   nearbyMines: number;
 }
 

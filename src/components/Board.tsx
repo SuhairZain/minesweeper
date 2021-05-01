@@ -23,7 +23,8 @@ export const Board = ({ size, state }: IBoardProps) => {
     const tiles = [];
 
     for (let j = 0; j < size; ++j) {
-      const { isMine, visibility } = state.tiles[i * size + j];
+      const { isMine } = state.tiles[i * size + j];
+      const visibility = state.visibilityState[i * size + j];
 
       tiles.push(
         <Tile

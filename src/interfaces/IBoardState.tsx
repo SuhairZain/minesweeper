@@ -1,11 +1,15 @@
-export type IMineVisibilityState = "obscure" | "unveiled" | "flagged";
+export type ITileVisibilityState = "hidden" | "unveiled" | "flagged";
 
-export interface ITileState {
-  visibility: IMineVisibilityState;
+export interface ITile {
   isMine: boolean;
 }
 
+export interface IBoard {
+  tiles: ITile[];
+}
+
 export interface IBoardState {
-  tiles: ITileState[];
+  tiles: ITile[];
+  visibilityState: ITileVisibilityState[];
   gameOver: boolean;
 }
