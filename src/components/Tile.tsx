@@ -3,16 +3,21 @@ import { styled } from "../interfaces/Styles";
 import { css } from "@emotion/css";
 import redFlag from "./red-flag.svg";
 import explosion from "./icons8-explosion-24.png";
+import { CSSProperties } from "react";
 
 const styles = styled({
   root: {
     height: 40,
     width: 40,
+  },
+  content: {
     backgroundColor: "#3D7CEB",
     borderRadius: 4,
     margin: 1,
     alignItems: "center",
     justifyContent: "center",
+    flex: 1,
+    alignSelf: "stretch",
   },
   unveiled: {
     backgroundColor: "#4b505b",
@@ -51,6 +56,7 @@ export interface ITileProps {
   isMine: boolean;
   visibility: ITileVisibilityState;
   nearbyMines: number;
+  style: CSSProperties;
 }
 
 export const Tile = ({
@@ -58,33 +64,36 @@ export const Tile = ({
   visibility,
   nearbyMines,
   gameOver,
+  style,
 }: ITileProps) => {
   const isUnveiled = visibility === "unveiled";
   const isFlagged = visibility === "flagged";
 
   return (
-    <div
-      className={css([
-        styles.root,
-        isUnveiled && styles.unveiled,
-        isFlagged && styles.flagged,
-      ])}
-    >
-      {isFlagged && (
-        <img src={redFlag} className={css(styles.flag)} alt="Flagged" />
-      )}
-      {gameOver && visibility !== "flagged" && isMine && (
-        <img src={explosion} alt="Mine exploded" />
-      )}
-      {nearbyMines !== 0 && (
-        <span
-          className={css([styles.nearbyMines], {
-            color: getColorForNearbyMines(nearbyMines),
-          })}
-        >
-          {nearbyMines}
-        </span>
-      )}
+    <div className={css(styles.root)} style={style}>
+      <div
+        className={css([
+          styles.content,
+          isUnveiled && styles.unveiled,
+          isFlagged && styles.flagged,
+        ])}
+      >
+        {isFlagged && (
+          <img src={redFlag} className={css(styles.flag)} alt="Flagged" />
+        )}
+        {gameOver && visibility !== "flagged" && isMine && (
+          <img src={explosion} alt="Mine exploded" />
+        )}
+        {nearbyMines !== 0 && (
+          <span
+            className={css([styles.nearbyMines], {
+              color: getColorForNearbyMines(nearbyMines),
+            })}
+          >
+            {nearbyMines}
+          </span>
+        )}
+      </div>
     </div>
   );
 };

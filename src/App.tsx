@@ -1,6 +1,7 @@
 import "./App.css";
 import { Board } from "./components/Board";
 import {
+  IBoard,
   IBoardState,
   ITile,
   ITileVisibilityState,
@@ -9,8 +10,9 @@ import {
 const boardSize = 10;
 
 const tiles: ITile[] = [];
+const board: IBoard = { tiles };
 const visibilityState: ITileVisibilityState[] = [];
-const boardState: IBoardState = { tiles, visibilityState, gameOver: true };
+const boardState: IBoardState = { board, visibilityState, gameOver: true };
 for (let i = 0; i < boardSize * boardSize; ++i) {
   tiles.push({
     isMine: false,
@@ -36,7 +38,7 @@ function App() {
           flex: 1,
         }}
       >
-        <Board size={boardSize} state={boardState} />
+        <Board state={boardState} />
       </div>
     </div>
   );

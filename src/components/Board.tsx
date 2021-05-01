@@ -1,48 +1,47 @@
 import { IBoardState } from "../interfaces/IBoardState";
 import { Tile } from "./Tile";
 import { styled } from "../interfaces/Styles";
+import { getBoardSize } from "../game/getBoardSize";
+import { getNearbyMines } from "../game/getNearbyMines";
 
 const styles = styled({
   root: {
-    flexDirection: "column",
     backgroundColor: "#12161F",
     borderRadius: 4,
     padding: 1,
+    flexWrap: "wrap",
   },
 });
 
 export interface IBoardProps {
-  size: number;
   state: IBoardState;
 }
 
-export const Board = ({ size, state }: IBoardProps) => {
-  const rows = [];
+export const Board = ({ state }: IBoardProps) => {
+  const { board, visibilityState } = state;
 
-  for (let i = 0; i < size; ++i) {
-    const tiles = [];
+  const boardSize = getBoardSize(board);
+  const childFlex = `1 0 ${100 / boardSize}%`;
 
-    for (let j = 0; j < size; ++j) {
-      const { isMine } = state.tiles[i * size + j];
-      const visibility = state.visibilityState[i * size + j];
+  return (
+    <div
+      style={{ ...styles.root, width: boardSize * 40 + (boardSize + 1) * 1 }}
+    >
+      {board.tiles.map((tile, i) => {
+        const { isMine } = tile;
+        const visibility = visibilityState[i];
 
-      tiles.push(
-        <Tile
-          key={j}
-          isMine={isMine}
-          visibility={visibility}
-          nearbyMines={
-            !isMine && visibility === "unveiled"
-              ? 1 + Math.floor(Math.random() * 9)
-              : 0
-          }
-          gameOver={state.gameOver || true}
-        />
-      );
-    }
-
-    rows.push(<div key={i}>{tiles}</div>);
-  }
-
-  return <div style={styles.root}>{rows}</div>;
+        return (
+          <Tile
+            key={i}
+            isMine={isMine}
+            visibility={visibility}
+            nearbyMines={getNearbyMines(board, i)}
+            gameOver={state.gameOver || true}
+            style={{ flex: childFlex }}
+          />
+        );
+      })}
+    </div>
+  );
 };
