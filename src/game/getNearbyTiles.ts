@@ -1,4 +1,4 @@
-import { IBoard } from "../interfaces/IBoardState";
+import { IBoard } from "./interfaces/IBoardState";
 import { getBoardSize } from "./getBoardSize";
 
 export const getNearbyTiles = (board: IBoard, position: number) => {

@@ -1,11 +1,11 @@
 import "./App.css";
-import { Board } from "./components/Board";
+import { Board } from "./game/components/Board";
 import {
   IBoard,
   IBoardState,
   ITile,
   ITileVisibilityState,
-} from "./interfaces/IBoardState";
+} from "./game/interfaces/IBoardState";
 
 const boardSize = 10;
 
@@ -21,7 +21,6 @@ for (let i = 0; i < boardSize * boardSize; ++i) {
   visibilityState.push(i % 3 === 0 ? "unveiled" : "hidden");
 }
 
-// tiles[3].visibility = "obscure";
 tiles[3].isMine = true;
 visibilityState[4] = "flagged";
 

@@ -1,8 +1,8 @@
 import { IBoardState } from "../interfaces/IBoardState";
 import { Tile } from "./Tile";
-import { styled } from "../interfaces/Styles";
-import { getBoardSize } from "../game/getBoardSize";
-import { getNearbyMines } from "../game/getNearbyMines";
+import { styled } from "../../interfaces/Styles";
+import { getBoardSize } from "../getBoardSize";
+import { getNearbyMines } from "../getNearbyMines";
 
 const styles = styled({
   root: {

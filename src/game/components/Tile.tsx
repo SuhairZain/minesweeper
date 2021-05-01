@@ -1,8 +1,8 @@
 import { ITileVisibilityState } from "../interfaces/IBoardState";
-import { styled } from "../interfaces/Styles";
+import { styled } from "../../interfaces/Styles";
 import { css } from "@emotion/css";
-import redFlag from "./red-flag.svg";
-import explosion from "./icons8-explosion-24.png";
+import redFlag from "../images/red-flag.svg";
+import explosion from "../images/icons8-explosion-24.png";
 import { CSSProperties } from "react";
 
 const styles = styled({

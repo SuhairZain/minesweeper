@@ -1,4 +1,4 @@
-import { IBoard } from "../../interfaces/IBoardState";
+import { IBoard } from "../interfaces/IBoardState";
 import { getNearbyMines } from "../getNearbyMines";
 import { formatBoard } from "./helpers";
 

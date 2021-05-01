@@ -1,4 +1,4 @@
-import { IBoard } from "../../interfaces/IBoardState";
+import { IBoard } from "../interfaces/IBoardState";
 import { getBoardSize } from "../getBoardSize";
 import { getNearbyTiles } from "../getNearbyTiles";
 import { formatBoard } from "./helpers";

@@ -1,4 +1,4 @@
-import { IBoard } from "../interfaces/IBoardState";
+import { IBoard } from "./interfaces/IBoardState";
 import { getNearbyTiles } from "./getNearbyTiles";
 
 export const getNearbyMines = (board: IBoard, position: number) => {
