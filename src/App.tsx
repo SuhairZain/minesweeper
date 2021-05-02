@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import { Board } from "./game/components/Board";
 import { createBoard } from "./game/createBoard";
+import { getTouchingEmptyTiles } from "./game/getTouchingEmptyTiles";
 import { IBoard, IBoardState } from "./game/interfaces/IBoardState";
 
 // TODO: Add modal for attribution for the flag icon and the several other resources I'm going to need
@@ -36,16 +37,25 @@ function App() {
           board={board}
           state={boardState}
           onClick={(index) => {
+            let maybeUpdatedBoard = board;
+
             if (!gameStarted) {
-              setBoard(createBoard(boardSize, 10, index));
+              maybeUpdatedBoard = createBoard(boardSize, 10, index);
+              setBoard(maybeUpdatedBoard);
             }
 
-            const gameOver = board.tiles[index].isMine;
+            const gameOver = maybeUpdatedBoard.tiles[index].isMine;
+
+            const tilesToUnveil = gameOver
+              ? [index]
+              : [index].concat(getTouchingEmptyTiles(maybeUpdatedBoard, index));
 
             setBoardState({
               gameOver,
               visibilityState: boardState.visibilityState.map((v, i) =>
-                i === index ? "unveiled" : v
+                tilesToUnveil.some((t) => t === i) && v !== "flagged"
+                  ? "unveiled"
+                  : v
               ),
             });
           }}
