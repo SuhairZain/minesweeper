@@ -56,6 +56,7 @@ const getColorForNearbyMines = (nearbyMines: number) => {
 
 export interface ITileProps {
   gameOver: boolean;
+  gameWon: boolean;
   isMine: boolean;
   visibility: ITileVisibilityState;
   nearbyMines: number;
@@ -69,6 +70,7 @@ export const Tile = ({
   visibility,
   nearbyMines,
   gameOver,
+  gameWon,
   style,
   onClick,
   onRightClick,
@@ -76,7 +78,7 @@ export const Tile = ({
   const isUnveiled = visibility === "unveiled";
   const isFlagged = visibility === "flagged";
 
-  const canClick = !gameOver && !isUnveiled && !isFlagged;
+  const canClick = !(gameOver || gameWon) && !isUnveiled && !isFlagged;
   const clickHandler = canClick ? onClick : () => {};
 
   return (

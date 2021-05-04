@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import { Timer } from "./components/Timer";
 import { Board } from "./game/components/Board";
 import { createBoard } from "./game/createBoard";
 import { getTouchingEmptyTiles } from "./game/getTouchingEmptyTiles";
@@ -22,7 +23,11 @@ function App() {
     visibilityState: board.tiles.map(() => "hidden"),
   });
 
-  const gameStarted = boardState.visibilityState.some((v) => v !== "hidden");
+  const gameWon = board.tiles.every((t, i) =>
+    t.isMine ? true : boardState.visibilityState[i] === "unveiled"
+  );
+
+  const [gameStarted, setGameStarted] = useState(false);
 
   return (
     <div className="App">
@@ -33,34 +38,52 @@ function App() {
           flex: 1,
         }}
       >
-        <Board
-          board={board}
-          state={boardState}
-          onClick={(index) => {
-            let maybeUpdatedBoard = board;
-
-            if (!gameStarted) {
-              maybeUpdatedBoard = createBoard(boardSize, 10, index);
-              setBoard(maybeUpdatedBoard);
-            }
-
-            const gameOver = maybeUpdatedBoard.tiles[index].isMine;
-
-            const tilesToUnveil = gameOver
-              ? [index]
-              : [index].concat(getTouchingEmptyTiles(maybeUpdatedBoard, index));
-
-            setBoardState({
-              gameOver,
-              visibilityState: boardState.visibilityState.map((v, i) =>
-                tilesToUnveil.some((t) => t === i) && v !== "flagged"
-                  ? "unveiled"
-                  : v
-              ),
-            });
+        <div
+          style={{
+            flexDirection: "column",
           }}
-          onRightClick={() => {}}
-        />
+        >
+          <Timer
+            status={
+              gameStarted && !(boardState.gameOver || gameWon)
+                ? "running"
+                : "stopped"
+            }
+            style={{ marginBottom: 8, alignSelf: "flex-start" }}
+          />
+          <Board
+            board={board}
+            state={boardState}
+            gameWon={gameWon}
+            onClick={(index) => {
+              let maybeUpdatedBoard = board;
+
+              if (!gameStarted) {
+                maybeUpdatedBoard = createBoard(boardSize, 40, index);
+                setBoard(maybeUpdatedBoard);
+                setGameStarted(true);
+              }
+
+              const gameOver = maybeUpdatedBoard.tiles[index].isMine;
+
+              const tilesToUnveil = gameOver
+                ? [index]
+                : [index].concat(
+                    getTouchingEmptyTiles(maybeUpdatedBoard, index)
+                  );
+
+              setBoardState({
+                gameOver,
+                visibilityState: boardState.visibilityState.map((v, i) =>
+                  tilesToUnveil.some((t) => t === i) && v !== "flagged"
+                    ? "unveiled"
+                    : v
+                ),
+              });
+            }}
+            onRightClick={() => {}}
+          />
+        </div>
       </div>
     </div>
   );

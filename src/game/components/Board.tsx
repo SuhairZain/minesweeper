@@ -8,7 +8,7 @@ const styles = styled({
   root: {
     backgroundColor: "#12161F",
     borderRadius: 4,
-    padding: 1,
+    padding: 2,
     flexWrap: "wrap",
   },
 });
@@ -16,11 +16,18 @@ const styles = styled({
 export interface IBoardProps {
   board: IBoard;
   state: IBoardState;
+  gameWon: boolean;
   onClick: (index: number) => void;
   onRightClick: (index: number) => void;
 }
 
-export const Board = ({ board, state, onClick, onRightClick }: IBoardProps) => {
+export const Board = ({
+  board,
+  state,
+  gameWon,
+  onClick,
+  onRightClick,
+}: IBoardProps) => {
   const { visibilityState } = state;
 
   const boardSize = getBoardSize(board);
@@ -40,6 +47,7 @@ export const Board = ({ board, state, onClick, onRightClick }: IBoardProps) => {
             isMine={isMine}
             visibility={visibility}
             nearbyMines={getNearbyMines(board, i)}
+            gameWon={gameWon}
             gameOver={state.gameOver}
             style={{ flex: childFlex }}
             onClick={() => {
