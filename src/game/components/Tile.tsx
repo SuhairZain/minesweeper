@@ -1,7 +1,7 @@
 import { ITileVisibilityState } from "../interfaces/IBoardState";
 import { styled } from "../../interfaces/Styles";
 import { css } from "@emotion/css";
-import redFlag from "../images/red-flag.svg";
+import redFlag from "../../images/red-flag.svg";
 import explosion from "../images/icons8-explosion-24.png";
 import { CSSProperties } from "react";
 
@@ -78,8 +78,19 @@ export const Tile = ({
   const isUnveiled = visibility === "unveiled";
   const isFlagged = visibility === "flagged";
 
+  const cancelEventAndCallHandler = (
+    clickHandler: () => void
+  ): React.MouseEventHandler<HTMLDivElement> => (e) => {
+    e.preventDefault();
+    clickHandler();
+  };
+
   const canClick = !(gameOver || gameWon) && !isUnveiled && !isFlagged;
-  const clickHandler = canClick ? onClick : () => {};
+  const clickHandler = canClick ? cancelEventAndCallHandler(onClick) : () => {};
+  const rightClickHandler =
+    !(gameOver || gameWon) && !isUnveiled
+      ? cancelEventAndCallHandler(onRightClick)
+      : () => {};
 
   return (
     <div className={css(styles.root)} style={style}>
@@ -91,6 +102,7 @@ export const Tile = ({
           canClick && styles.clickable,
         ])}
         onClick={clickHandler}
+        onContextMenu={rightClickHandler}
       >
         {isFlagged && (
           <img src={redFlag} className={css(styles.flag)} alt="Flagged" />

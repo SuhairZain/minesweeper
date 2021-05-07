@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import { RemainingFlagsCount } from "./components/FlaggedTilesCount";
 import { Timer } from "./components/Timer";
 import { Board } from "./game/components/Board";
 import { createBoard } from "./game/createBoard";
@@ -29,6 +30,16 @@ function App() {
 
   const [gameStarted, setGameStarted] = useState(false);
 
+  const flaggedTilesCount = boardState.visibilityState.reduce(
+    (acc, curr) => (curr === "flagged" ? acc + 1 : acc),
+    0
+  );
+  const numberOfMines = board.tiles.reduce(
+    (acc, curr) => (curr.isMine ? acc + 1 : acc),
+    0
+  );
+  const numberOfFlagsLeft = gameStarted ? numberOfMines - flaggedTilesCount : 0;
+
   return (
     <div className="App">
       <div
@@ -43,14 +54,16 @@ function App() {
             flexDirection: "column",
           }}
         >
-          <Timer
-            status={
-              gameStarted && !(boardState.gameOver || gameWon)
-                ? "running"
-                : "stopped"
-            }
-            style={{ marginBottom: 8, alignSelf: "flex-start" }}
-          />
+          <div style={{ marginBottom: 8, justifyContent: "space-between" }}>
+            <Timer
+              status={
+                gameStarted && !(boardState.gameOver || gameWon)
+                  ? "running"
+                  : "stopped"
+              }
+            />
+            <RemainingFlagsCount count={numberOfFlagsLeft} />
+          </div>
           <Board
             board={board}
             state={boardState}
@@ -81,7 +94,22 @@ function App() {
                 ),
               });
             }}
-            onRightClick={() => {}}
+            onRightClick={(index) => {
+              if (!gameStarted || gameWon || boardState.gameOver) {
+                return;
+              }
+
+              setBoardState(({ gameOver }) => ({
+                gameOver,
+                visibilityState: boardState.visibilityState.map((v, i) => {
+                  if (i !== index) {
+                    return v;
+                  }
+
+                  return v === "flagged" ? "hidden" : "flagged";
+                }),
+              }));
+            }}
           />
         </div>
       </div>

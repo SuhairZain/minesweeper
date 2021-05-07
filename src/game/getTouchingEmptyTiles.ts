@@ -20,6 +20,17 @@ export const getTouchingEmptyTiles = (
 
   let updatedVisitedTiles = visitedTiles.concat(nonVisitedNonMineTiles);
 
+  // console.log({ position, nonVisitedNonMineTiles, updatedVisitedTiles });
+
+  // let touchingEmptyTiles: number[] = nonVisitedEmptyTiles;
+  // nonVisitedEmptyTiles.forEach((index) => {
+  //   touchingEmptyTiles = touchingEmptyTiles.concat(
+  //     getTouchingEmptyTiles(board, index, updatedVisitedTiles)
+  //   );
+  //   // updatedVisitedTiles = updatedVisitedTiles.concat(touchingEmptyTiles);
+  // });
+  // return touchingEmptyTiles;
+
   return nonVisitedNonMineTiles.reduce((acc, curr) => {
     const touchingTiles = getTouchingEmptyTiles(
       board,
