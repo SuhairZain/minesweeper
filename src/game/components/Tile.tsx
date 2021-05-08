@@ -86,11 +86,10 @@ export const Tile = ({
   };
 
   const canClick = !(gameOver || gameWon) && !isUnveiled && !isFlagged;
-  const clickHandler = canClick ? cancelEventAndCallHandler(onClick) : () => {};
-  const rightClickHandler =
-    !(gameOver || gameWon) && !isUnveiled
-      ? cancelEventAndCallHandler(onRightClick)
-      : () => {};
+  const clickHandler = cancelEventAndCallHandler(canClick ? onClick : () => {});
+  const rightClickHandler = cancelEventAndCallHandler(
+    !(gameOver || gameWon) && !isUnveiled ? onRightClick : () => {}
+  );
 
   return (
     <div className={css(styles.root)} style={style}>
