@@ -4,8 +4,11 @@ export interface ITile {
   isMine: boolean;
 }
 
+export type IBoardSize = number;
+
 export interface IBoard {
   tiles: ITile[];
+  size: IBoardSize;
 }
 
 export interface IBoardState {

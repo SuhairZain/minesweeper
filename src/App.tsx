@@ -17,6 +17,7 @@ function App() {
     tiles: new Array(boardSize * boardSize)
       .fill(0)
       .map(() => ({ isMine: false })),
+    size: boardSize,
   });
 
   const [boardState, setBoardState] = useState<IBoardState>({

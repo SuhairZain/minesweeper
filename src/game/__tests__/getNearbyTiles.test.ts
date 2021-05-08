@@ -7,6 +7,7 @@ const getBoardOfSize = (size: number): IBoard => ({
   tiles: new Array(size * size)
     .fill(0)
     .map(() => ({ isMine: !!Math.round(Math.random()) })),
+  size,
 });
 
 const boardSize_2 = getBoardOfSize(2);

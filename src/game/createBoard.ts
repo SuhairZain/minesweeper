@@ -40,5 +40,6 @@ export const createBoard = (
       .fill(0)
       .map((_, i) => i)
       .map((i) => ({ isMine: mineIndices.includes(i) })),
+    size,
   };
 };
