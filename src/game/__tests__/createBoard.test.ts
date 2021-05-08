@@ -1,4 +1,5 @@
 import { createBoard } from "../createBoard";
+import { getNearbyTiles } from "../getNearbyTiles";
 import { IBoard } from "../interfaces/IBoardState";
 
 const createBoardParams: {
@@ -7,9 +8,7 @@ const createBoardParams: {
   initialIndex: number;
 }[] = [
   { size: 10, mines: 10, initialIndex: 0 },
-  { size: 10, mines: 99, initialIndex: 0 },
-  { size: 2, mines: 3, initialIndex: 0 },
-  { size: 3, mines: 8, initialIndex: 0 },
+  { size: 10, mines: 91, initialIndex: 0 },
 ];
 
 describe("WHEN testing createBoard", () => {
@@ -25,8 +24,14 @@ describe("WHEN testing createBoard", () => {
         expect(board.tiles).toHaveLength(size * size);
       });
 
-      it("SHOULD NOT have a mine at the initial index", () => {
-        expect(board.tiles[initialIndex].isMine).toBe(false);
+      it("SHOULD NOT have a mine at the initial index and the ones nearby", () => {
+        const initialIndexAndNearby = [initialIndex].concat(
+          getNearbyTiles(board, initialIndex)
+        );
+
+        for (const index of initialIndexAndNearby) {
+          expect(board.tiles[index].isMine).toBe(false);
+        }
       });
 
       it("SHOULD have the correct number of mines", () => {
