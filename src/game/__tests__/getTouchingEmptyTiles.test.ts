@@ -25,6 +25,25 @@ const inputAndExpected: {
     },
     expectedTouchingTiles: [1, 3, 4, 5, 6, 7, 8],
   },
+  {
+    input: {
+      board: {
+        tiles: [
+          { isMine: true },
+          { isMine: false },
+          { isMine: true },
+          { isMine: false },
+          { isMine: false },
+          { isMine: false },
+          { isMine: false },
+          { isMine: false },
+          { isMine: false },
+        ],
+      },
+      position: 8,
+    },
+    expectedTouchingTiles: [3, 4, 5, 6, 7],
+  },
 ];
 
 describe("WHEN given getTouchingEmptyTiles", () => {

@@ -32,6 +32,12 @@ export const getTouchingEmptyTiles = (
   // return touchingEmptyTiles;
 
   return nonVisitedNonMineTiles.reduce((acc, curr) => {
+    const numberOfMinesNearby = getNearbyMines(board, curr);
+
+    if (numberOfMinesNearby !== 0) {
+      return acc;
+    }
+
     const touchingTiles = getTouchingEmptyTiles(
       board,
       curr,
