@@ -1,8 +1,15 @@
 import { IBoard } from "./interfaces/IBoardState";
 import { getBoardSize } from "./getBoardSize";
 
-export const getNearbyTiles = (board: IBoard, position: number) => {
-  const boardSize = getBoardSize(board);
+export function getNearbyTiles(
+  boardOrBoardSize: IBoard | number,
+  position: number
+): number[] {
+  if (typeof boardOrBoardSize !== "number") {
+    return getNearbyTiles(getBoardSize(boardOrBoardSize), position);
+  }
+
+  const boardSize = boardOrBoardSize;
 
   const i = Math.floor(position / boardSize);
   const j = position % boardSize;
@@ -31,4 +38,4 @@ export const getNearbyTiles = (board: IBoard, position: number) => {
 
     return acc.concat(index);
   }, []);
-};
+}
