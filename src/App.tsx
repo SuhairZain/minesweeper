@@ -11,7 +11,7 @@ import { IBoard, IBoardSize, IBoardState } from "./game/interfaces/IBoardState";
 // <div>Icons made by <a href="https://www.flaticon.com/authors/alfredo-hernandez" title="Alfredo Hernandez">Alfredo Hernandez</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 // <a target="_blank" href="undefined/icons/set/explosion">Explosion icon</a> icon by <a target="_blank" href="">Icons8</a>
 function App() {
-  const [boardSize, setBoardSize] = useState<IBoardSize>([20, 20]);
+  const [boardSize, setBoardSize] = useState<IBoardSize>([20, 25]);
 
   const [board, setBoard] = useState<IBoard>({
     tiles: new Array(boardSize[0] * boardSize[1])
@@ -73,7 +73,7 @@ function App() {
               let maybeUpdatedBoard = board;
 
               if (!gameStarted) {
-                maybeUpdatedBoard = createBoard(boardSize, 40, index);
+                maybeUpdatedBoard = createBoard(boardSize, 80, index);
                 setBoard(maybeUpdatedBoard);
                 setGameStarted(true);
               }
