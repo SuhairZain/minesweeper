@@ -1,27 +1,34 @@
 import { useState } from "react";
 import "./App.css";
 import { RemainingFlagsCount } from "./components/FlaggedTilesCount";
+import { LevelAndRestartButton } from "./components/LevelAndRestartButton";
 import { Timer } from "./components/Timer";
 import { Board } from "./game/components/Board";
 import { createBoard } from "./game/createBoard";
 import { getTouchingEmptyTiles } from "./game/getTouchingEmptyTiles";
-import { IBoard, IBoardState, IGameLevel } from "./game/interfaces/IBoardState";
+import {
+  IBoard,
+  IBoardState,
+  IGameLevels,
+  IGameLevelTitle,
+} from "./game/interfaces/IBoardState";
 
-enum IGameLevelTitle {
-  Hard = "Hard",
-}
-
-const levels: Record<IGameLevelTitle, IGameLevel> = {
+const levels: IGameLevels = {
   [IGameLevelTitle.Hard]: { size: [20, 25], mines: 80 },
 };
+
+const getInitialBoardState = (board: IBoard): IBoardState => ({
+  gameOver: false,
+  visibilityState: board.tiles.map(() => "hidden"),
+});
 
 // TODO: Add modal for attribution for the flag icon and the several other resources I'm going to need
 // <div>Icons made by <a href="https://www.flaticon.com/authors/alfredo-hernandez" title="Alfredo Hernandez">Alfredo Hernandez</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 // <a target="_blank" href="undefined/icons/set/explosion">Explosion icon</a> icon by <a target="_blank" href="">Icons8</a>
 function App() {
-  // const [boardSize, setBoardSize] = useState<IBoardSize>([20, 25]);
-  const [level, setLevel] = useState<IGameLevel>(levels.Hard);
-  const boardSize = level.size;
+  const [level, setLevel] = useState<IGameLevelTitle>(IGameLevelTitle.Hard);
+  const levelSpecs = levels[level];
+  const boardSize = levelSpecs.size;
 
   const [board, setBoard] = useState<IBoard>({
     tiles: new Array(boardSize[0] * boardSize[1])
@@ -30,23 +37,22 @@ function App() {
     size: boardSize,
   });
 
-  const [boardState, setBoardState] = useState<IBoardState>({
-    gameOver: false,
-    visibilityState: board.tiles.map(() => "hidden"),
-  });
+  const [boardState, setBoardState] = useState<IBoardState>(
+    getInitialBoardState(board)
+  );
 
   const gameWon = board.tiles.every((t, i) =>
     t.isMine ? true : boardState.visibilityState[i] === "unveiled"
   );
 
-  const [gameStarted, setGameStarted] = useState(false);
+  const gameStarted = boardState.visibilityState.some((v) => v === "unveiled");
 
   const flaggedTilesCount = boardState.visibilityState.reduce(
     (acc, curr) => (curr === "flagged" ? acc + 1 : acc),
     0
   );
 
-  const numberOfFlagsLeft = level.mines - flaggedTilesCount;
+  const numberOfFlagsLeft = levelSpecs.mines - flaggedTilesCount;
 
   return (
     <div className="App">
@@ -70,6 +76,13 @@ function App() {
                   : "stopped"
               }
             />
+            <LevelAndRestartButton
+              currentLevel={level}
+              levels={levels}
+              onRestartClick={() => {
+                setBoardState(getInitialBoardState(board));
+              }}
+            />
             <RemainingFlagsCount count={numberOfFlagsLeft} />
           </div>
           <Board
@@ -80,9 +93,8 @@ function App() {
               let maybeUpdatedBoard = board;
 
               if (!gameStarted) {
-                maybeUpdatedBoard = createBoard(level, index);
+                maybeUpdatedBoard = createBoard(levelSpecs, index);
                 setBoard(maybeUpdatedBoard);
-                setGameStarted(true);
               }
 
               const gameOver = maybeUpdatedBoard.tiles[index].isMine;

@@ -11,6 +11,12 @@ export interface IGameLevel {
   mines: number;
 }
 
+export enum IGameLevelTitle {
+  Hard = "Hard",
+}
+
+export type IGameLevels = Record<IGameLevelTitle, IGameLevel>;
+
 export interface IBoard {
   tiles: ITile[];
   size: IBoardSize;
