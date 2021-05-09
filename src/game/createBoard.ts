@@ -1,5 +1,5 @@
 import { getNearbyTiles } from "./getNearbyTiles";
-import { IBoard, IBoardSize } from "./interfaces/IBoardState";
+import { IBoard, IBoardSize, IGameLevel } from "./interfaces/IBoardState";
 
 const getRandomInt = (max: number) => Math.floor(Math.random() * max);
 
@@ -8,11 +8,12 @@ const getRandomItem = <T>(items: T[]): T => {
 };
 
 export const createBoard = (
-  size: IBoardSize,
-  numberOfMines: number,
+  level: IGameLevel,
   initialIndex: number
 ): IBoard => {
-  if (numberOfMines > size[0] * size[1] - 9) {
+  const { size, mines } = level;
+
+  if (mines > size[0] * size[1] - 9) {
     throw new Error("Board cannot be full of mines");
   }
 
@@ -26,7 +27,7 @@ export const createBoard = (
     .filter((_, i) => !initialIndexAndNearby.some((index) => index === i));
 
   const mineIndices: number[] = [];
-  for (let i = 0; i < numberOfMines; ++i) {
+  for (let i = 0; i < mines; ++i) {
     const randomIndex = getRandomItem(indicesToRandomlyPlaceMines);
     mineIndices.push(randomIndex);
 

@@ -17,7 +17,7 @@ describe("WHEN testing createBoard", () => {
       let board: IBoard;
 
       beforeAll(() => {
-        board = createBoard(size, mines, initialIndex);
+        board = createBoard({ size, mines }, initialIndex);
       });
 
       it("SHOULD create a board of the correct size", () => {

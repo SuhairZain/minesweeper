@@ -6,6 +6,11 @@ export interface ITile {
 
 export type IBoardSize = [number, number];
 
+export interface IGameLevel {
+  size: IBoardSize;
+  mines: number;
+}
+
 export interface IBoard {
   tiles: ITile[];
   size: IBoardSize;

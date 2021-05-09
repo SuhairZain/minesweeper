@@ -15,7 +15,7 @@ const boardSize_2 = getBoardOfSize([2, 2]);
 const boardSize_3 = getBoardOfSize([3, 3]);
 const boardSize_4 = getBoardOfSize([4, 4]);
 const boardSize_5 = getBoardOfSize([5, 5]);
-const boardSize_5_10 = createBoard([5, 10], 10, 8);
+const boardSize_5_10 = createBoard({ size: [5, 10], mines: 10 }, 8);
 
 const inputAndExpected: {
   input: { board: IBoard; position: number };

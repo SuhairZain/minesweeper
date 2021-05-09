@@ -5,13 +5,23 @@ import { Timer } from "./components/Timer";
 import { Board } from "./game/components/Board";
 import { createBoard } from "./game/createBoard";
 import { getTouchingEmptyTiles } from "./game/getTouchingEmptyTiles";
-import { IBoard, IBoardSize, IBoardState } from "./game/interfaces/IBoardState";
+import { IBoard, IBoardState, IGameLevel } from "./game/interfaces/IBoardState";
+
+enum IGameLevelTitle {
+  Hard = "Hard",
+}
+
+const levels: Record<IGameLevelTitle, IGameLevel> = {
+  [IGameLevelTitle.Hard]: { size: [20, 25], mines: 80 },
+};
 
 // TODO: Add modal for attribution for the flag icon and the several other resources I'm going to need
 // <div>Icons made by <a href="https://www.flaticon.com/authors/alfredo-hernandez" title="Alfredo Hernandez">Alfredo Hernandez</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 // <a target="_blank" href="undefined/icons/set/explosion">Explosion icon</a> icon by <a target="_blank" href="">Icons8</a>
 function App() {
-  const [boardSize, setBoardSize] = useState<IBoardSize>([20, 25]);
+  // const [boardSize, setBoardSize] = useState<IBoardSize>([20, 25]);
+  const [level, setLevel] = useState<IGameLevel>(levels.Hard);
+  const boardSize = level.size;
 
   const [board, setBoard] = useState<IBoard>({
     tiles: new Array(boardSize[0] * boardSize[1])
@@ -35,11 +45,8 @@ function App() {
     (acc, curr) => (curr === "flagged" ? acc + 1 : acc),
     0
   );
-  const numberOfMines = board.tiles.reduce(
-    (acc, curr) => (curr.isMine ? acc + 1 : acc),
-    0
-  );
-  const numberOfFlagsLeft = gameStarted ? numberOfMines - flaggedTilesCount : 0;
+
+  const numberOfFlagsLeft = level.mines - flaggedTilesCount;
 
   return (
     <div className="App">
@@ -73,7 +80,7 @@ function App() {
               let maybeUpdatedBoard = board;
 
               if (!gameStarted) {
-                maybeUpdatedBoard = createBoard(boardSize, 80, index);
+                maybeUpdatedBoard = createBoard(level, index);
                 setBoard(maybeUpdatedBoard);
                 setGameStarted(true);
               }
