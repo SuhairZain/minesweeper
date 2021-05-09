@@ -3,7 +3,7 @@ import { styled } from "../interfaces/Styles";
 import { css } from "@emotion/css";
 import timerIcon from "../images/timer_black_24dp.svg";
 
-export type ITimerStatus = "running" | "stopped";
+export type ITimerStatus = "running" | "stopped" | "reset";
 
 export interface ITimerProps {
   status: ITimerStatus;
@@ -43,6 +43,11 @@ export const Timer = ({ status, style }: ITimerProps) => {
 
     if (status === "stopped") {
       clearInterval(timerId);
+    }
+
+    if (status === "reset") {
+      clearInterval(timerId);
+      setTime(0);
     }
 
     return () => clearInterval(timerId);

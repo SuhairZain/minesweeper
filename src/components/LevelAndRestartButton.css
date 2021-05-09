@@ -1,0 +1,27 @@
+.level-select select {
+  width: 150px;
+  padding: 5px 35px 5px 5px;
+  font-size: 16px;
+  border: 1px solid #4b505b;
+  height: 40px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background: url("../images/tune_white_24dp.svg") 96% / 15% no-repeat #4b505b;
+  border-radius: 4px;
+  color: white;
+}
+
+/* CAUTION: Internet Explorer hackery ahead */
+
+.level-select select::-ms-expand {
+  display: none; /* Remove default arrow in Internet Explorer 10 and 11 */
+}
+
+/* Target Internet Explorer 9 to undo the custom arrow */
+@media screen and (min-width: 0\0) {
+  .level-select select {
+    background: none\9;
+    padding: 5px\9;
+  }
+}

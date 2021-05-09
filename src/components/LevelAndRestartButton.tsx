@@ -4,11 +4,14 @@ import { css } from "@emotion/css";
 import restartIcon from "../images/restart.svg";
 import { IGameLevels, IGameLevelTitle } from "../game/interfaces/IBoardState";
 
+import "./LevelAndRestartButton.css";
+
 export interface ILevelAndRestartButtonProps {
   currentLevel: IGameLevelTitle;
   levels: IGameLevels;
   style?: CSSProperties;
   onRestartClick: () => void;
+  onLevelChange: (level: IGameLevelTitle) => void;
 }
 
 const styles = styled({
@@ -19,16 +22,6 @@ const styles = styled({
     borderRadius: 4,
     alignItems: "center",
     justifyContent: "center",
-  },
-  level: {
-    color: "white",
-    width: 120,
-    paddingLeft: 8,
-    backgroundColor: "#4b505b",
-    alignSelf: "center",
-    alignItems: "center",
-    borderRadius: 4,
-    height: 40,
   },
   restartButton: {
     height: 40,
@@ -45,14 +38,33 @@ const styles = styled({
   },
 });
 
+export function objectKeys<TKey extends string | symbol | number>(
+  o: Record<TKey, any>
+): TKey[] {
+  return Object.keys(o) as any;
+}
+
 export const LevelAndRestartButton = ({
   currentLevel,
+  levels,
   style,
   onRestartClick,
+  onLevelChange,
 }: ILevelAndRestartButtonProps) => {
+  const levelTitles = objectKeys(levels);
+
   return (
     <div className={css(styles.root)} style={style}>
-      <div className={css(styles.level)}>{currentLevel}</div>
+      <div className="level-select">
+        <select
+          value={currentLevel}
+          onChange={(e) => onLevelChange(e.target.value as any)}
+        >
+          {levelTitles.map((level) => {
+            return <option key={level}>{level}</option>;
+          })}
+        </select>
+      </div>
       <div className={css(styles.restartButton)} onClick={onRestartClick}>
         <img src={restartIcon} width={24} height={24} />
       </div>

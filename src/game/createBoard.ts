@@ -1,5 +1,5 @@
 import { getNearbyTiles } from "./getNearbyTiles";
-import { IBoard, IBoardSize, IGameLevel } from "./interfaces/IBoardState";
+import { IBoard, IGameLevel } from "./interfaces/IBoardState";
 
 const getRandomInt = (max: number) => Math.floor(Math.random() * max);
 

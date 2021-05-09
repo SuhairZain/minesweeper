@@ -3,13 +3,7 @@ import { getBoardSize } from "../getBoardSize";
 import { getNearbyTiles } from "../getNearbyTiles";
 import { formatBoard, sortNumbers } from "./helpers";
 import { createBoard } from "../createBoard";
-
-const getBoardOfSize = (size: IBoardSize): IBoard => ({
-  tiles: new Array(size[0] * size[1])
-    .fill(0)
-    .map(() => ({ isMine: !!Math.round(Math.random()) })),
-  size,
-});
+import { getBoardOfSize } from "../helpers";
 
 const boardSize_2 = getBoardOfSize([2, 2]);
 const boardSize_3 = getBoardOfSize([3, 3]);

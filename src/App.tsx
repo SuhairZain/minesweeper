@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer } from "react";
 import "./App.css";
 import { RemainingFlagsCount } from "./components/FlaggedTilesCount";
 import { LevelAndRestartButton } from "./components/LevelAndRestartButton";
@@ -6,6 +6,7 @@ import { Timer } from "./components/Timer";
 import { Board } from "./game/components/Board";
 import { createBoard } from "./game/createBoard";
 import { getTouchingEmptyTiles } from "./game/getTouchingEmptyTiles";
+import { getBoardOfSize } from "./game/helpers";
 import {
   IBoard,
   IBoardState,
@@ -14,6 +15,7 @@ import {
 } from "./game/interfaces/IBoardState";
 
 const levels: IGameLevels = {
+  [IGameLevelTitle.Easy]: { size: [10, 10], mines: 10 },
   [IGameLevelTitle.Hard]: { size: [20, 25], mines: 80 },
 };
 
@@ -22,24 +24,111 @@ const getInitialBoardState = (board: IBoard): IBoardState => ({
   visibilityState: board.tiles.map(() => "hidden"),
 });
 
+type IAction =
+  | { type: "changeLevel"; payload: { level: IGameLevelTitle } }
+  | { type: "primaryClick"; payload: { index: number } }
+  | { type: "secondaryClick"; payload: { index: number } };
+
+const reducer = (state: IAppState, action: IAction): IAppState => {
+  switch (action.type) {
+    case "changeLevel": {
+      return getInitialState(action.payload.level);
+    }
+    case "primaryClick": {
+      const { boardState, level } = state;
+      const { index } = action.payload;
+
+      const gameStarted = boardState.visibilityState.some(
+        (v) => v === "unveiled"
+      );
+
+      const board = gameStarted
+        ? state.board
+        : createBoard(levels[level], index);
+
+      const gameOver = board.tiles[index].isMine;
+
+      const tilesToUnveil = gameOver
+        ? [index]
+        : [index].concat(getTouchingEmptyTiles(board, index));
+
+      return {
+        ...state,
+        board,
+        boardState: {
+          gameOver,
+          visibilityState: boardState.visibilityState.map((v, i) =>
+            tilesToUnveil.some((t) => t === i) && v !== "flagged"
+              ? "unveiled"
+              : v
+          ),
+        },
+      };
+    }
+    case "secondaryClick": {
+      const { board, boardState } = state;
+      const { index } = action.payload;
+
+      const gameWon = board.tiles.every((t, i) =>
+        t.isMine ? true : boardState.visibilityState[i] === "unveiled"
+      );
+
+      const gameStarted = boardState.visibilityState.some(
+        (v) => v === "unveiled"
+      );
+
+      if (!gameStarted || gameWon || boardState.gameOver) {
+        return state;
+      }
+
+      return {
+        ...state,
+        boardState: {
+          ...boardState,
+          visibilityState: boardState.visibilityState.map((v, i) => {
+            if (i !== index) {
+              return v;
+            }
+
+            return v === "flagged" ? "hidden" : "flagged";
+          }),
+        },
+      };
+    }
+  }
+};
+
+interface IAppState {
+  board: IBoard;
+  boardState: IBoardState;
+  level: IGameLevelTitle;
+}
+
+const getInitialState = (level: IGameLevelTitle): IAppState => {
+  const levelSpecs = levels[level];
+  const boardSize = levelSpecs.size;
+
+  const board = getBoardOfSize(boardSize);
+  const boardState = getInitialBoardState(board);
+
+  return {
+    level,
+    board,
+    boardState,
+  };
+};
+
 // TODO: Add modal for attribution for the flag icon and the several other resources I'm going to need
 // <div>Icons made by <a href="https://www.flaticon.com/authors/alfredo-hernandez" title="Alfredo Hernandez">Alfredo Hernandez</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 // <a target="_blank" href="undefined/icons/set/explosion">Explosion icon</a> icon by <a target="_blank" href="">Icons8</a>
 function App() {
-  const [level, setLevel] = useState<IGameLevelTitle>(IGameLevelTitle.Hard);
-  const levelSpecs = levels[level];
-  const boardSize = levelSpecs.size;
-
-  const [board, setBoard] = useState<IBoard>({
-    tiles: new Array(boardSize[0] * boardSize[1])
-      .fill(0)
-      .map(() => ({ isMine: false })),
-    size: boardSize,
-  });
-
-  const [boardState, setBoardState] = useState<IBoardState>(
-    getInitialBoardState(board)
+  const [state, dispatch] = useReducer(
+    reducer,
+    getInitialState(IGameLevelTitle.Easy)
   );
+
+  const { board, boardState, level } = state;
+  const { mines } = levels[level];
 
   const gameWon = board.tiles.every((t, i) =>
     t.isMine ? true : boardState.visibilityState[i] === "unveiled"
@@ -52,7 +141,7 @@ function App() {
     0
   );
 
-  const numberOfFlagsLeft = levelSpecs.mines - flaggedTilesCount;
+  const numberOfFlagsLeft = mines - flaggedTilesCount;
 
   return (
     <div className="App">
@@ -71,16 +160,21 @@ function App() {
           <div style={{ marginBottom: 8, justifyContent: "space-between" }}>
             <Timer
               status={
-                gameStarted && !(boardState.gameOver || gameWon)
-                  ? "running"
-                  : "stopped"
+                !gameStarted
+                  ? "reset"
+                  : boardState.gameOver || gameWon
+                  ? "stopped"
+                  : "running"
               }
             />
             <LevelAndRestartButton
               currentLevel={level}
               levels={levels}
               onRestartClick={() => {
-                setBoardState(getInitialBoardState(board));
+                dispatch({ type: "changeLevel", payload: { level } });
+              }}
+              onLevelChange={(level) => {
+                dispatch({ type: "changeLevel", payload: { level } });
               }}
             />
             <RemainingFlagsCount count={numberOfFlagsLeft} />
@@ -90,45 +184,10 @@ function App() {
             state={boardState}
             gameWon={gameWon}
             onClick={(index) => {
-              let maybeUpdatedBoard = board;
-
-              if (!gameStarted) {
-                maybeUpdatedBoard = createBoard(levelSpecs, index);
-                setBoard(maybeUpdatedBoard);
-              }
-
-              const gameOver = maybeUpdatedBoard.tiles[index].isMine;
-
-              const tilesToUnveil = gameOver
-                ? [index]
-                : [index].concat(
-                    getTouchingEmptyTiles(maybeUpdatedBoard, index)
-                  );
-
-              setBoardState({
-                gameOver,
-                visibilityState: boardState.visibilityState.map((v, i) =>
-                  tilesToUnveil.some((t) => t === i) && v !== "flagged"
-                    ? "unveiled"
-                    : v
-                ),
-              });
+              dispatch({ type: "primaryClick", payload: { index } });
             }}
             onRightClick={(index) => {
-              if (!gameStarted || gameWon || boardState.gameOver) {
-                return;
-              }
-
-              setBoardState(({ gameOver }) => ({
-                gameOver,
-                visibilityState: boardState.visibilityState.map((v, i) => {
-                  if (i !== index) {
-                    return v;
-                  }
-
-                  return v === "flagged" ? "hidden" : "flagged";
-                }),
-              }));
+              dispatch({ type: "secondaryClick", payload: { index } });
             }}
           />
         </div>

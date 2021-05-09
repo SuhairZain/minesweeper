@@ -12,6 +12,7 @@ export interface IGameLevel {
 }
 
 export enum IGameLevelTitle {
+  Easy = "Easy",
   Hard = "Hard",
 }
 

@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties } from "react";
 import { styled } from "../interfaces/Styles";
 import { css } from "@emotion/css";
 import redFlag from "../images/red-flag.svg";
