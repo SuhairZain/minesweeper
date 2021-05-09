@@ -15,7 +15,7 @@ const inputAndExpected: {
           { isMine: false },
           { isMine: false },
         ],
-        size: 2,
+        size: [2, 2],
       },
       position: 0,
     },
@@ -30,7 +30,7 @@ const inputAndExpected: {
           { isMine: false },
           { isMine: false },
         ],
-        size: 2,
+        size: [2, 2],
       },
       position: 0,
     },
@@ -45,7 +45,7 @@ const inputAndExpected: {
           { isMine: true },
           { isMine: true },
         ],
-        size: 2,
+        size: [2, 2],
       },
       position: 0,
     },
@@ -56,7 +56,9 @@ const inputAndExpected: {
 describe("WHEN given getNearbyMines", () => {
   for (const { expectedMinesNearby, input } of inputAndExpected) {
     const { position, board } = input;
-    describe(`WHEN given ${formatBoard(board)}\nand ${position}`, () => {
+    describe(`WHEN given ${formatBoard(board, [
+      position,
+    ])}\nand ${position}`, () => {
       it(`SHOULD be ${expectedMinesNearby}`, () => {
         expect(getNearbyMines(board, position)).toBe(expectedMinesNearby);
       });

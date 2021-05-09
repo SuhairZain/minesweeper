@@ -1,5 +1,5 @@
 import { getNearbyTiles } from "./getNearbyTiles";
-import { IBoard } from "./interfaces/IBoardState";
+import { IBoard, IBoardSize } from "./interfaces/IBoardState";
 
 const getRandomInt = (max: number) => Math.floor(Math.random() * max);
 
@@ -8,11 +8,11 @@ const getRandomItem = <T>(items: T[]): T => {
 };
 
 export const createBoard = (
-  size: number,
+  size: IBoardSize,
   numberOfMines: number,
   initialIndex: number
 ): IBoard => {
-  if (numberOfMines > size * size - 9) {
+  if (numberOfMines > size[0] * size[1] - 9) {
     throw new Error("Board cannot be full of mines");
   }
 
@@ -20,7 +20,7 @@ export const createBoard = (
     getNearbyTiles(size, initialIndex)
   );
 
-  let indicesToRandomlyPlaceMines = new Array(size * size)
+  let indicesToRandomlyPlaceMines = new Array(size[0] * size[1])
     .fill(0)
     .map((_, i) => i)
     .filter((_, i) => !initialIndexAndNearby.some((index) => index === i));
@@ -36,7 +36,7 @@ export const createBoard = (
   }
 
   return {
-    tiles: new Array(size * size)
+    tiles: new Array(size[0] * size[1])
       .fill(0)
       .map((_, i) => i)
       .map((i) => ({ isMine: mineIndices.includes(i) })),

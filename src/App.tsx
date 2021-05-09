@@ -5,16 +5,16 @@ import { Timer } from "./components/Timer";
 import { Board } from "./game/components/Board";
 import { createBoard } from "./game/createBoard";
 import { getTouchingEmptyTiles } from "./game/getTouchingEmptyTiles";
-import { IBoard, IBoardState } from "./game/interfaces/IBoardState";
+import { IBoard, IBoardSize, IBoardState } from "./game/interfaces/IBoardState";
 
 // TODO: Add modal for attribution for the flag icon and the several other resources I'm going to need
 // <div>Icons made by <a href="https://www.flaticon.com/authors/alfredo-hernandez" title="Alfredo Hernandez">Alfredo Hernandez</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
 // <a target="_blank" href="undefined/icons/set/explosion">Explosion icon</a> icon by <a target="_blank" href="">Icons8</a>
 function App() {
-  const [boardSize, setBoardSize] = useState(10);
+  const [boardSize, setBoardSize] = useState<IBoardSize>([20, 20]);
 
   const [board, setBoard] = useState<IBoard>({
-    tiles: new Array(boardSize * boardSize)
+    tiles: new Array(boardSize[0] * boardSize[1])
       .fill(0)
       .map(() => ({ isMine: false })),
     size: boardSize,

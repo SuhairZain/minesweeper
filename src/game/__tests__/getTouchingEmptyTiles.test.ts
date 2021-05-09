@@ -20,7 +20,7 @@ const inputAndExpected: {
           { isMine: false },
           { isMine: false },
         ],
-        size: 3,
+        size: [3, 3],
       },
       position: 2,
     },
@@ -40,7 +40,7 @@ const inputAndExpected: {
           { isMine: false },
           { isMine: false },
         ],
-        size: 3,
+        size: [3, 3],
       },
       position: 8,
     },
@@ -51,8 +51,10 @@ const inputAndExpected: {
 describe("WHEN given getTouchingEmptyTiles", () => {
   for (const { expectedTouchingTiles, input } of inputAndExpected) {
     const { position, board } = input;
-    describe(`WHEN given ${formatBoard(board)}\nand ${position}`, () => {
-      it(`SHOULD be ${expectedTouchingTiles}`, () => {
+    describe(`WHEN given ${formatBoard(board, [
+      position,
+    ])}\nand ${position}`, () => {
+      it(`SHOULD be ${formatBoard(board, expectedTouchingTiles)}`, () => {
         expect(getTouchingEmptyTiles(board, position).sort()).toEqual(
           expectedTouchingTiles
         );

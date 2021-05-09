@@ -31,11 +31,14 @@ export const Board = ({
   const { visibilityState } = state;
 
   const boardSize = getBoardSize(board);
-  const childFlex = `1 0 ${100 / boardSize}%`;
+  const childFlex = `1 0 ${100 / boardSize[1]}%`;
 
   return (
     <div
-      style={{ ...styles.root, width: boardSize * 40 + (boardSize + 1) * 1 }}
+      style={{
+        ...styles.root,
+        width: boardSize[1] * 40 + (boardSize[1] + 1) * 1,
+      }}
     >
       {board.tiles.map((tile, i) => {
         const { isMine } = tile;

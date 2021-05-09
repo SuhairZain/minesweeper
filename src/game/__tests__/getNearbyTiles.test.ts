@@ -1,19 +1,21 @@
-import { IBoard } from "../interfaces/IBoardState";
+import { IBoard, IBoardSize } from "../interfaces/IBoardState";
 import { getBoardSize } from "../getBoardSize";
 import { getNearbyTiles } from "../getNearbyTiles";
-import { formatBoard } from "./helpers";
+import { formatBoard, sortNumbers } from "./helpers";
+import { createBoard } from "../createBoard";
 
-const getBoardOfSize = (size: number): IBoard => ({
-  tiles: new Array(size * size)
+const getBoardOfSize = (size: IBoardSize): IBoard => ({
+  tiles: new Array(size[0] * size[1])
     .fill(0)
     .map(() => ({ isMine: !!Math.round(Math.random()) })),
   size,
 });
 
-const boardSize_2 = getBoardOfSize(2);
-const boardSize_3 = getBoardOfSize(3);
-const boardSize_4 = getBoardOfSize(4);
-const boardSize_5 = getBoardOfSize(5);
+const boardSize_2 = getBoardOfSize([2, 2]);
+const boardSize_3 = getBoardOfSize([3, 3]);
+const boardSize_4 = getBoardOfSize([4, 4]);
+const boardSize_5 = getBoardOfSize([5, 5]);
+const boardSize_5_10 = createBoard([5, 10], 10, 8);
 
 const inputAndExpected: {
   input: { board: IBoard; position: number };
@@ -62,17 +64,23 @@ const inputAndExpected: {
     input: { board: boardSize_3, position: 8 },
     expectedTilesNearby: [4, 5, 7],
   },
+  {
+    input: { board: boardSize_5_10, position: 8 },
+    expectedTilesNearby: [7, 9, 17, 18, 19],
+  },
 ];
 
 describe("WHEN testing getNearbyTiles", () => {
   for (const { expectedTilesNearby, input } of inputAndExpected) {
     const { position, board } = input;
 
-    describe(`WHEN given ${formatBoard(board)}\nand ${position}`, () => {
-      it(`SHOULD be ${expectedTilesNearby}`, () => {
-        expect(getNearbyTiles(board, position).sort()).toEqual(
-          expectedTilesNearby
-        );
+    describe(`WHEN given ${formatBoard(board, [
+      position,
+    ])}\nand ${position}`, () => {
+      it(`SHOULD be ${formatBoard(board, expectedTilesNearby)}`, () => {
+        expect(
+          getNearbyTiles(board, position).slice().sort(sortNumbers)
+        ).toEqual(expectedTilesNearby);
       });
     });
   }
@@ -83,11 +91,11 @@ describe("WHEN testing getNearbyTiles", () => {
     describe(`WHEN given board of size ${boardSize}`, () => {
       it("SHOULD return the correct number of tiles based on the position", () => {
         for (let position = 0; position < board.tiles.length; ++position) {
-          const i = Math.floor(position / boardSize);
-          const j = position % boardSize;
+          const i = Math.floor(position / boardSize[1]);
+          const j = position % boardSize[1];
 
-          const isHorizontalEdge = i === 0 || i === boardSize - 1;
-          const isVerticalEdge = j === 0 || j === boardSize - 1;
+          const isHorizontalEdge = i === 0 || i === boardSize[1] - 1;
+          const isVerticalEdge = j === 0 || j === boardSize[0] - 1;
           const isCornerTile = isHorizontalEdge && isVerticalEdge;
 
           const expectedLength = isCornerTile
