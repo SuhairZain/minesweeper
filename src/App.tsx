@@ -15,7 +15,7 @@ import {
 } from "./game/interfaces/IBoardState";
 
 const levels: IGameLevels = {
-  [IGameLevelTitle.Easy]: { size: [10, 10], mines: 10 },
+  [IGameLevelTitle.Easy]: { size: [11, 11], mines: 10 },
   [IGameLevelTitle.Hard]: { size: [20, 25], mines: 80 },
 };
 
